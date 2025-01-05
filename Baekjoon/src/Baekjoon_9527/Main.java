@@ -13,6 +13,7 @@ public class Main {
         for(int i=1; i<=59; i++){
             sum[i] =  ((1L << i-1)+ sum[i-1]*2);
         }
+        System.out.println("sum[2] = " + sum[2]);
 
         System.out.println(cal(sum,end) - cal(sum,start-1));
     }
