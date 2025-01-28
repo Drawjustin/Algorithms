@@ -42,7 +42,7 @@ public class MainV3 {
         }
         System.out.println("YES");
     }
-
+    
     static void union(int a, int b){
         a = find(a);
         b = find(b);
