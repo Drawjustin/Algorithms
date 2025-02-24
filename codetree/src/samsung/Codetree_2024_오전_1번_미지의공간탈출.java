@@ -25,35 +25,35 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
         //큐브,맵 초기화
         mapAndCubeInit();
 
-
-//        for (int i = 0; i < N; i++) {
-//            for (int j = 0; j < N; j++) {
-//                System.out.print(map[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-//        System.out.println("Codetree_2024_오전_1번_미지의공간탈출.main");
-//
-//        for (int i = 0; i < M * 3; i++) {
-//            for (int j = 0; j < M * 3; j++) {
-//                System.out.print(cube[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-
         //큐브 탈출
-        int curTimes = cubeEscape();
-
-        result = curTimes+1;
-        //이상현상 진행
-        progressBlackhole(curTimes);
-
-        //맵 탈출
-        if(!mapEscape(curTimes))
-            result = -1;
+        if(cubeEscape()) {
+            for (int i = 0; i < M * 3; i++) {
+                for (int j = 0; j < M * 3; j++) {
+                    System.out.print(cube[i][j] + " ");
+                }
+                System.out.println();
+            }
+            System.out.println("result = " + result);
+            result++;
+            //이상현상 진행
+            progressBlackhole(result);
+            //맵 탈출
+            if (!mapEscape(result))
+                result = -1;
+        }
         System.out.println(result);
     }
 
+    private static void printMap(){
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(map[i][j]+ " ");
+            }
+            System.out.println();
+        }
+        System.out.println("=============");
+        System.out.println("=============");
+    }
     private static void mapAndCubeInit() throws IOException {
         map = new int[N + 1][N + 1];
         cube = new int[M * 3 + 1][M * 3 + 1];
@@ -117,7 +117,7 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
             else if(di == 2)
                 di = 1;
             int vi = Integer.parseInt(stk.nextToken());
-            blackhole.add(new int [] {y,x,di,vi,1});
+            blackhole.add(new int [] {y,x,di,vi,0});
             map[y][x] = 1;
         }
 
@@ -163,16 +163,20 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
         int width = Math.abs(escapeVERTEX[1] - startTimeWall[1]);
         switch (escapeVERTEX[2]) {
             case 0:
-                cube[M + height][0] = -1;
+                if(cube[M + height][0] == 0)
+                    cube[M + height][0] = -1;
                 break;
             case 1:
-                cube[0][M + width] = -1;
+                if(cube[0][M + width] == 0)
+                    cube[0][M + width] = -1;
                 break;
             case 2:
-                cube[M + height][3 * M - 1] = -1;
+                if(cube[M + height][3 * M - 1] == 0)
+                    cube[M + height][3 * M - 1] = -1;
                 break;
             case 3:
-                cube[3 * M - 1][M + width] = -1;
+                if(cube[3 * M - 1][M + width] == 0)
+                    cube[3 * M - 1][M + width] = -1;
                 break;
 
         }
@@ -180,7 +184,7 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
 
     }
 
-    private static int cubeEscape() {
+    private static boolean cubeEscape() {
         int[] startLocation = new int[2];
         outer:
         for (int i = 0; i < M * 3; i++) {
@@ -212,19 +216,12 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
         while (!deque.isEmpty()) {
             int[] curLocation = deque.poll();
 
-
-            if (curLocation[0] == escapeLocation[0] && curLocation[1] == escapeLocation[1]) {
-                return curLocation[2]+1;
-            }
-
+            System.out.println("Y : " + curLocation[0] + " X : " + curLocation[1] + " time : " + curLocation[2]);
             for (int i = 0; i < 4; i++) {
                 int nxtY = curLocation[0] + dy[i];
                 int nxtX = curLocation[1] + dx[i];
 
                 if (0 > nxtY || nxtY >= M * 3 || 0 > nxtX || nxtX >= M * 3)
-                    continue;
-
-                if (cube[nxtY][nxtX] == 1)
                     continue;
 
                 if (cube[nxtY][nxtX] == -5) {
@@ -233,6 +230,12 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
                     nxtX = nxtLocation[1];
                 }
 
+                if (cube[nxtY][nxtX] == 1)
+                    continue;
+                if (nxtY == escapeLocation[0] && nxtX == escapeLocation[1]) {
+                    result = curLocation[2] + 1;
+                    return true;
+                }
 
                 if (isVistied[nxtY][nxtX])
                     continue;
@@ -244,7 +247,7 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
 
 
         }
-        return -1;
+        return false;
     }
 
     private static int[] findNxtLocation(int curY, int curX, int dir) {
@@ -268,7 +271,7 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
             for (int j = 0; j < curblackholeSize; j++) {
                 int [] curHole = blackhole.poll();
 
-                if(curHole[3] > curHole[4]){
+                if(curHole[3] > curHole[4] + 1){
                     blackhole.add(new int []{curHole[0],curHole[1],curHole[2],curHole[3],curHole[4]+1});
                     continue;
                 }
@@ -276,10 +279,11 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
                    0 > curHole[1] + dx[curHole[2]] || curHole[1] + dx[curHole[2]] >= N)
                     continue;
 
-                if(map[curHole[0]+dy[curHole[2]]][curHole[1]+dx[curHole[2]]] == 0){
-                    map[curHole[0]+dy[curHole[2]]][curHole[1]+dx[curHole[2]]] = 1;
-                    blackhole.add(new int []{curHole[0]+dy[curHole[2]],curHole[1]+dx[curHole[2]],curHole[2],curHole[3],1});
+                if(map[curHole[0]+dy[curHole[2]]][curHole[1]+dx[curHole[2]]] == 1 || map[curHole[0]+dy[curHole[2]]][curHole[1]+dx[curHole[2]]] == 3 || map[curHole[0]+dy[curHole[2]]][curHole[1]+dx[curHole[2]]] == 4){
+                    continue;
                 }
+                map[curHole[0]+dy[curHole[2]]][curHole[1]+dx[curHole[2]]] = 1;
+                blackhole.add(new int []{curHole[0]+dy[curHole[2]],curHole[1]+dx[curHole[2]],curHole[2],curHole[3],0});
             }
         }
     }
@@ -290,6 +294,11 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
 
         deque.add(new int [] {escapeVERTEX[0],escapeVERTEX[1],curTimes});
         isVisited[escapeVERTEX[0]][escapeVERTEX[1]] = true;
+
+
+        if(map[escapeVERTEX[0]][escapeVERTEX[1]] == 4){
+            return true;
+        }
 
         while(!deque.isEmpty()){
             int dequeSize = deque.size();
