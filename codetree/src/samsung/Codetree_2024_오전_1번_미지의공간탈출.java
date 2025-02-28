@@ -229,9 +229,9 @@ public class Codetree_2024_오전_1번_미지의공간탈출 {
                     nxtY = nxtLocation[0];
                     nxtX = nxtLocation[1];
                 }
-
                 if (cube[nxtY][nxtX] == 1)
                     continue;
+
                 if (nxtY == escapeLocation[0] && nxtX == escapeLocation[1]) {
                     result = curLocation[2] + 1;
                     return true;
