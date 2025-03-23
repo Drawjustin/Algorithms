@@ -18,7 +18,7 @@ public class Main {
         // 0 호수 1 배불땅 2 배가땅 3 초배 4 빨배 5 꽃
         init();
         dfs(0,0);
-        System.out.println("result = " + result);
+        System.out.println(result);
 
     }
 
@@ -53,26 +53,46 @@ public class Main {
     }
 
     private static void bfs() {
-
         int [][] tempMap = copyMap(map);
         boolean [][] isVisited = new boolean[N][M];
         Deque<int []> deque = new ArrayDeque<>();
+        Map<String, int []> hashMap = new HashMap<>();
         initMap(tempMap, deque, isVisited);
-        while(!deque.isEmpty()){
-            int [] curTemp = deque.poll();
+        do{
 
-            for (int i = 0; i < 4; i++) {
-                int nxtY = curTemp[0] + dy[i];
-                int nxtX = curTemp[1] + dx[i];
-
-                if(nxtY < 0 || nxtY >= N || nxtX < 0 || nxtX >= M)
-                    continue;
-                if(isVisited[nxtY][nxtY])
+            for (int[] value : hashMap.values()) {
+                tempMap[value[0]][value[1]] = value[2];
+                isVisited[value[0]][value[1]] = true;
+                deque.add(value);
             }
 
-        }
-        result = Math.max(result,findFlower(tempMap));
+            hashMap.clear();
+            while(!deque.isEmpty()) {
+                int[] curTemp = deque.poll();
 
+                for (int i = 0; i < 4; i++) {
+                    int nxtY = curTemp[0] + dy[i];
+                    int nxtX = curTemp[1] + dx[i];
+                    String key = nxtY + "," + nxtX;
+
+                    if (nxtY < 0 || nxtY >= N || nxtX < 0 || nxtX >= M)
+                        continue;
+
+                    if (tempMap[nxtY][nxtX] == 0 || isVisited[nxtY][nxtX] || tempMap[nxtY][nxtX] == 5)
+                        continue;
+
+                    if (hashMap.containsKey(key)) {
+                        if (hashMap.get(key)[2] != curTemp[2]) {
+                            tempMap[nxtY][nxtX] = 5;
+                            hashMap.remove(key);
+                        }
+                    } else {
+                        hashMap.put(key, new int[]{nxtY, nxtX, curTemp[2]});
+                    }
+                }
+            }
+        }while(!hashMap.isEmpty());
+        result = Math.max(result,findFlower(tempMap));
     }
 
     private static int findFlower(int[][] tempMap) {
@@ -90,7 +110,7 @@ public class Main {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
                 if(tempMap[i][j] == 3 || tempMap[i][j] == 4){
-                    deque.add(new int[]{i,j,0});
+                    deque.add(new int[]{i,j,tempMap[i][j]});
                     isVisited[i][j] = true;
                 }
             }
