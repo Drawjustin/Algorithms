@@ -26,7 +26,9 @@ public class Codetree_2023_하반기_오전_1번_왕실의기사대결 {
         int number;
         int MaxHP;
         List<int []> list;
+        boolean isMoved;
         boolean isDead;
+        boolean isPrevent;
         public Knight(int r, int c, int h, int w, int k, int number) {
             this.r = r;
             this.c = c;
@@ -35,8 +37,10 @@ public class Codetree_2023_하반기_오전_1번_왕실의기사대결 {
             this.k = k;
             this.number = number;
             isDead = false;
-            MaxHP = k;
+            isMoved = false;
+            isPrevent = false;
             list = new ArrayList<>();
+            MaxHP = k;
         }
 
         @Override
@@ -49,8 +53,9 @@ public class Codetree_2023_하반기_오전_1번_왕실의기사대결 {
                     ", k=" + k +
                     ", number=" + number +
                     ", MaxHP=" + MaxHP +
-                    ", list=" + list +
+                    ", isMoved=" + isMoved +
                     ", isDead=" + isDead +
+                    ", isPrevent=" + isPrevent +
                     '}';
         }
     }
@@ -69,25 +74,39 @@ public class Codetree_2023_하반기_오전_1번_왕실의기사대결 {
             int curI = Integer.parseInt(stk.nextToken());
             int curD = Integer.parseInt(stk.nextToken());
             moves.clear();
-            System.out.println("=======================");
             Order order = new Order(KNIGHT_THRESHOLD + curI - 1, curD);
+
+            knightsList.get(curI-1).isPrevent = true;
             if(Logic(order)){
                 updateKnightState(order);
             }
+            knightsList.get(curI-1).isPrevent = false;
+
         }
         System.out.println(calRemainingKnight());
     }
+    private static void print(){
+        for (Knight knight : knightsList) {
+            System.out.println(knight);
+        }
+        for (int i = 0; i < L; i++) {
+            for (int j = 0; j < L; j++) {
+                System.out.printf("%3d ", map[i][j]);
+            }
+            System.out.println();
+        }
+        System.out.println("=====================");
 
+    }
     private static int calRemainingKnight() {
         int result = 0;
         for (int i = 0; i < knightsList.size(); i++) {
             Knight knight = knightsList.get(i);
+            if(knight.isDead)
+                continue;
             result += knight.MaxHP - knight.k;
         }
-
-        System.out.println(knightsList);
-
-
+//        System.out.println(knightsList);
         return result;
     }
 
@@ -96,17 +115,28 @@ public class Codetree_2023_하반기_오전_1번_왕실의기사대결 {
         for (int[] VERTEX : moves) {
             int nxtY = VERTEX[0] + dy[order.d];
             int nxtX = VERTEX[1] + dx[order.d];
-            map[nxtY][nxtX] = VERTEX[2];
-            VERTEX[0] = nxtY;
-            VERTEX[1] = nxtX;
+            map[VERTEX[0]][VERTEX[1]] -= VERTEX[2];
+            map[nxtY][nxtX] += VERTEX[2];
+            Knight knight = knightsList.get(VERTEX[2] - KNIGHT_THRESHOLD);
+            knight.r = nxtY;
+            knight.c = nxtX;
         }
+
+
 
         for (int i = 0; i < knightsList.size(); i++) {
             Knight knight = knightsList.get(i);
-
+            for (int q = 0; q < knight.list.size(); q++) {
+                int[] temp = knight.list.get(q);
+                temp[0] += dy[order.d];
+                temp[1] += dx[order.d];
+            }
+            if(!knight.isMoved)
+                continue;
+            knight.isMoved = false;
             for (int j = 0; j < knight.list.size(); j++) {
                 int[] VERTEX = knight.list.get(j);
-                if(trap[VERTEX[0]][VERTEX[1]]){
+                if(trap[VERTEX[0]][VERTEX[1]] && !knight.isPrevent){
                     knight.k--;
                     if(knight.k == 0){
                         for (int k = 0; k < knight.list.size(); k++) {
@@ -114,7 +144,6 @@ public class Codetree_2023_하반기_오전_1번_왕실의기사대결 {
                             map[tempVERTEX[0]][tempVERTEX[1]] = 0;
                         }
                         knight.isDead = true;
-                        knightsList.remove(knight);
                         break;
                     }
                 }
@@ -125,9 +154,7 @@ public class Codetree_2023_하반기_오전_1번_왕실의기사대결 {
 
     private static boolean Logic(Order order) {
 
-        System.out.printf("%d번째 명령, %d %d\n" , ++orderNumber, order.i, order.d);
         // order 예시) 100번기사 아래로 이동
-        List<int []> list = new ArrayList<>();
         Knight knight = knightsList.get(order.i - KNIGHT_THRESHOLD);
         if(knight.isDead)
             return false;
@@ -137,7 +164,7 @@ public class Codetree_2023_하반기_오전_1번_왕실의기사대결 {
             int nxtY = VERTEX[0] + dy[order.d];
             int nxtX = VERTEX[1] + dx[order.d];
 
-            if(nxtY < 0 || nxtY >= L || nxtX < 0 || nxtX >= N)
+            if(nxtY < 0 || nxtY >= L || nxtX < 0 || nxtX >= L)
                 return false;
 
             if(map[nxtY][nxtX] == 2)
@@ -149,6 +176,7 @@ public class Codetree_2023_하반기_오전_1번_왕실의기사대결 {
                 }
             }
         }
+        knight.isMoved = true;
         moves.addAll(knight.list);
         return true;
     }
