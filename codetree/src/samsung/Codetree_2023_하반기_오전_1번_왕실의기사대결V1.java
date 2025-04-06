@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Codetree_2023_하반기_오전_1번_왕실의기사대결 {
+public class Codetree_2023_하반기_오전_1번_왕실의기사대결V1 {
     static int orderNumber;
     static final int KNIGHT_THRESHOLD = 100;
     static int [] dy = {-1,0,1,0};
