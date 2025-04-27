@@ -1,9 +1,11 @@
+package samsung;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Main {
+public class Codetree_2025_상반기_오전_1번_민트초코우유 {
     static int N,T;
     static Member[][] memberMap;
     static boolean[][] isGrouped;
@@ -257,7 +259,7 @@ public class Main {
 
     }
 
-    static class Group {
+    static class Group implements Comparable<Group> {
         List<Member> members = new ArrayList<>();
         int typeCode; // 조합 코드: 1~7
         int typeCodeSize;
@@ -288,6 +290,11 @@ public class Main {
         }
 
         @Override
+        public int compareTo(Group o) {
+            return this.getLeader().compareTo(o.getLeader());
+        }
+
+        @Override
         public String toString() {
             return "Group{" +
                     "members=" + members +
@@ -297,7 +304,7 @@ public class Main {
         }
     }
 
-    static class Member {
+    static class Member implements Comparable<Member> {
         int x, y, value;
         Set<Character> set = new HashSet<>();
 
@@ -310,6 +317,16 @@ public class Main {
             memberMap[y][x].value = 1;
             return power;
         }
+        @Override
+        public int compareTo(Member o) {
+            int thisValue = memberMap[this.y][this.x].value;
+            int otherValue = memberMap[o.y][o.x].value;
+
+            if (thisValue != otherValue) return Integer.compare(otherValue,thisValue);
+            if (this.y != o.y) return Integer.compare(this.y, o.y);
+            return Integer.compare(this.x, o.x);
+        }
+
         @Override
         public String toString() {
             return "Member{" +
