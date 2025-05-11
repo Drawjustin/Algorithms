@@ -13,6 +13,10 @@ class Santa {
         this.y = y;
         this.x = x;
     }
+    public void updateLocation(int y, int x){
+        this.y = y;
+        this.x = x;
+    }
 }
 
 class Distance implements Comparable<Distance> {
@@ -96,32 +100,12 @@ public class Codetree_2023_하반기_오후_1번_루돌프의반란 {
 
         // 게임 턴 수만큼 반복
         while (M-- > 0) {
-            int minY = 10000;
-            int minX = 10000;
-            int minId = 0;
 
-            // 1. 가장 가까운 산타 찾음
-            for (int i = 1; i <= P; i++) {
-                // 격자 밖을 벗어난 산타일 경우 다음으로 넘어감
-                if (dead[i]) {
-                    continue;
-                }
-
-                Distance min = new Distance((int) (Math.pow(minY - ry, 2) + Math.pow(minX - rx, 2)), minY, minX);
-                Distance cur = new Distance((int) (Math.pow(santa[i].y - ry, 2) + Math.pow(santa[i].x - rx, 2)), santa[i].y, santa[i].x);
-
-                if (cur.compareTo(min) < 0) {
-                    minY = cur.y;
-                    minX = cur.x;
-                    minId = i;
-                }
-            }
-
-//    		System.out.println(minX + " " + minY + " " + minId);
+            int minId = getMinId();
 
             // 2. 루돌프가 가장 가까운 산타를 향해 돌진
             if (minId != 0) {
-                moveRudolph(minY, minX, minId);
+                moveRudolph(minId);
             }
 
             // 3. 산타가 루돌프와 가장 가까운 방향으로 움직임
@@ -141,8 +125,35 @@ public class Codetree_2023_하반기_오후_1번_루돌프의반란 {
 
     }
 
+    private static int getMinId() {
+        int minY = 10000;
+        int minX = 10000;
+        int minId = 0;
+
+        // 1. 가장 가까운 산타 찾음
+        for (int i = 1; i <= P; i++) {
+            // 격자 밖을 벗어난 산타일 경우 다음으로 넘어감
+            if (dead[i]) {
+                continue;
+            }
+
+            Distance min = new Distance((int) (Math.pow(minY - ry, 2) + Math.pow(minX - rx, 2)), minY, minX);
+            Distance cur = new Distance((int) (Math.pow(santa[i].y - ry, 2) + Math.pow(santa[i].x - rx, 2)), santa[i].y, santa[i].x);
+
+            if (cur.compareTo(min) < 0) {
+                minY = cur.y;
+                minX = cur.x;
+                minId = i;
+            }
+        }
+        return minId;
+    }
+
     // 루돌프와 가장 가까운 산타 위치, 번호를 매개변수로 받음
-    private static void moveRudolph(int y, int x, int id) {
+    private static void moveRudolph(int id) {
+        int y = santa[id].y;
+        int x = santa[id].x;
+
         int moveY = 0;
 
         if (y > ry) {
@@ -200,7 +211,7 @@ public class Codetree_2023_하반기_오후_1번_루돌프의반란 {
                 if (isRange(lastY, lastX)) {
                     // 격자 안인 경우 이전 칸에 있던 산타를 현재 칸으로 옮겨줌
                     map[lastY][lastX] = idx;
-                    santa[idx] = new Santa(lastY, lastX);
+                    santa[idx].updateLocation(lastY,lastX);
                 } else {
                     dead[idx] = true; // 격자 밖을 벗어나는 경우 죽은 표시 해줌
                 }
@@ -214,7 +225,7 @@ public class Codetree_2023_하반기_오후_1번_루돌프의반란 {
 
             if (isRange(firstY, firstX)) {
                 map[firstY][firstX] = id;
-                santa[id] = new Santa(firstY, firstX);
+                santa[id].updateLocation(firstY,firstX);
             } else {
                 dead[id] = true;
             }
@@ -298,7 +309,7 @@ public class Codetree_2023_하반기_오후_1번_루돌프의반란 {
                             if (isRange(lastY, lastX)) {
                                 // 격자 안인 경우 이전 칸에 있던 산타를 현재 칸으로 옮겨줌
                                 map[lastY][lastX] = idx;
-                                santa[idx] = new Santa(lastY, lastX);
+                                santa[idx].updateLocation(lastY,lastX);
                             } else {
                                 dead[idx] = true; // 격자 밖을 벗어나는 경우 죽은 표시 해줌
                             }
@@ -314,7 +325,7 @@ public class Codetree_2023_하반기_오후_1번_루돌프의반란 {
 
                         if (isRange(firstY, firstX)) {
                             map[firstY][firstX] = i;
-                            santa[i] = new Santa(firstY, firstX);
+                            santa[i].updateLocation(firstY,firstX);
                         } else {
                             dead[i] = true;
                         }
@@ -324,7 +335,7 @@ public class Codetree_2023_하반기_오후_1번_루돌프의반란 {
                     map[santa[i].y][santa[i].x] = 0; // 원래 산타가 있던 위치는 빈칸으로 만듦
 
                     // 해당 산타 위치 갱신
-                    santa[i] = new Santa(ny, nx);
+                    santa[i].updateLocation(ny,nx);
                     map[ny][nx] = i;
                 }
 
