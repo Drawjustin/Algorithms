@@ -10,31 +10,22 @@ public class main {
 //        Solution s = new Solution();
 //        System.out.println(Arrays.toString(s.solution(new int[]{9, 1, 5, 3,6,2})));
 //    }
-     class Solution{
-        public int[] solution(int[] numbers) {
-            int[] answer = new int [numbers.length];
+class Solution {
+    public int[] solution(int[] numbers) {
+        int[] answer = new int[numbers.length];
+        Stack<Integer> stack = new Stack<>();
 
-
-            Stack<Integer> stack = new Stack<>();
-
-            for (int i = numbers.length - 1; i >= 0; i--) {
-                if(stack.isEmpty()){
-                    answer[i] = -1;
-                    stack.add(numbers[i]);
-                }else{
-                    if(stack.peek() > numbers[i]){
-                        answer[i] = stack.peek();
-                        stack.add(numbers[i]);
-                    }else{
-                        while(!stack.isEmpty() && stack.peek() <= numbers[i]){
-                            stack.pop();
-                        }
-                        answer[i] = stack.isEmpty() ? -1 : stack.peek();
-                        stack.add(numbers[i]);
-                    }
-                }
+        for (int i = numbers.length - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && stack.peek() <= numbers[i]) {
+                stack.pop();
             }
-            return answer;
+
+            answer[i] = stack.isEmpty() ? -1 : stack.peek();
+
+            stack.push(numbers[i]);
         }
+
+        return answer;
     }
+}
 }
