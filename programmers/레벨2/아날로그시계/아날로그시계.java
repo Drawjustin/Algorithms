@@ -1,3 +1,5 @@
+package 레벨2.아날로그시계;
+
 class Solution {
     public int solution(int h1, int m1, int s1, int h2, int m2, int s2) {
         // 종료 시각까지의 알람 횟수 - 시작 시각까지의 알람 횟수
