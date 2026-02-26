@@ -19,11 +19,6 @@ public class main {
                 S_i += i1 % (i + 1);
             }
 
-
-            if(answer == 0){
-                answer = S_i;
-                continue;
-            }
             answer ^= S_i;
         }
 
