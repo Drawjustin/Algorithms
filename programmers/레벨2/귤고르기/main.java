@@ -1,9 +1,6 @@
 package 레벨2.귤고르기;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class main {
     class Solution{
@@ -14,14 +11,17 @@ public class main {
             for (int i : tangerine) {
                 map.put(i, map.getOrDefault(i, 0) + 1);
             }
-
-            PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
-            int count = 0;
-            for(int i : map.keySet()){
-                pq.add(map.get(i));
+            int[] counts = new int[map.size()];
+            int idx = 0;
+            for (int c : map.values()) {   // keySet+get 대신 values()
+                counts[idx++] = c;
             }
-            while (count < k && !pq.isEmpty()){
-                count += pq.poll();
+
+            Arrays.sort(counts); // 오름차순
+
+            int sum = 0;
+            for (int i = counts.length - 1; i >= 0 && sum < k; i--) {
+                sum += counts[i];
                 answer++;
             }
 
