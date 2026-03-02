@@ -4,50 +4,44 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class main {
-
     class Solution {
         public int solution(String[] want, int[] number, String[] discount) {
             int answer = 0;
-            int[] curWants = new int[number.length];
-            Map<String, Integer> map = new HashMap<>();
 
-            // 1. 과일 이름에 인덱스 번호 부여
+            // 1. 정답지 Map 만들기 (내가 원하는 과일과 개수)
+            Map<String, Integer> wantMap = new HashMap<>();
             for (int i = 0; i < want.length; i++) {
-                map.put(want[i], i);
+                wantMap.put(want[i], number[i]);
             }
 
-            // 2. 초기 10일 세팅
+            // 2. 현재 10일치 장바구니 Map 만들기
+            Map<String, Integer> discountMap = new HashMap<>();
             for (int i = 0; i < 10; i++) {
-                int index = map.getOrDefault(discount[i], -1);
-                if(index != -1) curWants[index]++;
+                discountMap.put(discount[i], discountMap.getOrDefault(discount[i], 0) + 1);
             }
 
-            // 첫 10일 검사
-            if(isMatch(curWants, number)) answer++;
+            // ✨ 마법의 한 줄: 두 Map이 완벽히 똑같은지 비교!
+            if (wantMap.equals(discountMap)) answer++;
 
-            // 3. 슬라이딩 윈도우 (한 칸씩 밀기)
+            // 3. 슬라이딩 윈도우
             for (int i = 10; i < discount.length; i++) {
-                int leftIndex = map.getOrDefault(discount[i - 10], -1);
-                if(leftIndex != -1) curWants[leftIndex]--;
+                // [왼쪽] 빠지는 항목 처리
+                String leftItem = discount[i - 10];
+                discountMap.put(leftItem, discountMap.get(leftItem) - 1);
+                // 개수가 0이 되면 Map에서 아예 삭제해줘야 equals() 비교가 제대로 됨!
+                if (discountMap.get(leftItem) == 0) {
+                    discountMap.remove(leftItem);
+                }
 
-                int rightIndex = map.getOrDefault(discount[i], -1);
-                if(rightIndex != -1) curWants[rightIndex]++;
+                // [오른쪽] 들어오는 항목 처리
+                String rightItem = discount[i];
+                discountMap.put(rightItem, discountMap.getOrDefault(rightItem, 0) + 1);
 
-                // 윈도우 이동 후 검사
-                if(isMatch(curWants, number)) answer++;
+                // ✨ 이동할 때마다 통째로 비교!
+                if (wantMap.equals(discountMap)) answer++;
             }
 
             return answer;
-        }
-
-        // 🟢 일일이 for문 안에서 count 세던 걸 이렇게 분리하면 훨씬 우아해짐!
-        private boolean isMatch(int[] curWants, int[] number) {
-            for (int i = 0; i < number.length; i++) {
-                if (curWants[i] != number[i]) {
-                    return false; // 하나라도 틀리면 바로 탈락!
-                }
-            }
-            return true; // 무사히 다 통과하면 정답!
         }
     }
 }
