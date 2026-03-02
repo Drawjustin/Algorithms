@@ -60,10 +60,8 @@ public class main {
             for (int i = 0; i < 10; i++) {
                 if(info[i] < ryan[i]){
                     maxRyan += 10 - i;
-                }else if(info[i] == 0){
-
-                }
-                else{
+                }else if (info[i] > 0) {
+                    // 라이언이 지거나 비겼는데, 어피치가 1발 이상 쏜 경우만 어피치 점수 획득
                     maxApache += 10 - i;
                 }
             }
