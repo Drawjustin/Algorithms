@@ -40,14 +40,15 @@ public class main {
             List<int []> list = new ArrayList<>();
 
             for (String number : Out.keySet()) {
+                int totalTime = Out.get(number);
+                int cost = defaultCost; // 기본 요금 세팅
 
-                if(Out.get(number) > defaultTime){
-                    int upper = (Out.get(number) - defaultTime) % unitTime > 0 ? 1 : 0;
-                    int cost =  defaultCost + ((Out.get(number) - defaultTime) / unitTime + upper) * unitCost;
-                    list.add(new int []{Integer.parseInt(number),cost});
-                }else{
-                    list.add(new int []{Integer.parseInt(number),defaultCost});
+                // 🎯 2. 요금 계산 공식 수정 (기본 시간 초과 시에만 추가 요금, 올림 처리)
+                if (totalTime > defaultTime) {
+                    cost += (int) Math.ceil((double) (totalTime - defaultTime) / unitTime) * unitCost;
                 }
+
+                list.add(new int[]{Integer.parseInt(number), cost});
 
             }
             Collections.sort(list, (o1, o2) -> o1[0] - o2[0]);
