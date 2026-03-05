@@ -2,38 +2,22 @@ package 레벨2.모음사전;
 
 public class main {
     class Solution {
-        int result = 0;
-        int bk = 0;
-        char [] words = new char[5];
         public int solution(String word) {
-            int answer = 0;
-            //
-            StringBuilder stb = new StringBuilder();
+            // 단어가 한 글자씩 길어질 때마다 기본적으로 1씩 증가하므로 시작 값을 길이에 맞춤
+            int answer = word.length();
 
-            words[0] = 'A';
-            words[1] = 'E';
-            words[2] = 'I';
-            words[3] = 'O';
-            words[4] = 'U';
+            String vowels = "AEIOU";
+            int[] weights = {781, 156, 31, 6, 1}; // 우리가 구한 자릿수별 가중치
 
-            dfs(stb,word);
-            answer = result;
+            for (int i = 0; i < word.length(); i++) {
+                // 현재 문자가 AEIOU 중 몇 번째인지 찾음 (A:0, E:1, I:2, O:3, U:4)
+                int index = vowels.indexOf(word.charAt(i));
+
+                // 해당 자리의 가중치 * 문자의 인덱스를 더해줌
+                answer += weights[i] * index;
+            }
+
             return answer;
-        }
-        void dfs(StringBuilder stb, String word){
-            if(bk == 1)
-                return;
-            if(stb.toString().equals(word)){
-                bk = 1;
-                return;
-            }
-            for (int i = 0; i < 5; i++) {
-                if(stb.length() < 5){
-                    result++;
-                    dfs(stb.append(words[i]),word);
-                    stb.deleteCharAt(stb.length()-1);
-                }
-            }
         }
     }
 }
