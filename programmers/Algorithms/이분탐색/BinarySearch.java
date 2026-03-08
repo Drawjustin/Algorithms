@@ -2,7 +2,7 @@ package Algorithms.이분탐색;
 
 import java.util.List;
 
-public class LowerBound {
+public class BinarySearch {
     public static void main(String[] args) {
         /**
          * A이상의 값이 처음 나오는 Index 찾기
