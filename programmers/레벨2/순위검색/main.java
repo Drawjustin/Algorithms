@@ -62,16 +62,15 @@ public class main {
         // --- 기준 점수 이상인 사람 수를 찾는 이분 탐색 (Lower Bound) ---
         private int binarySearch(List<Integer> list, int target) {
             int left = 0;
-            int right = list.size() - 1;
+            int right = list.size();
 
-            while (left <= right) {
+            while (left < right) {
                 int mid = (left + right) / 2;
 
-                // 중간 점수가 목표 점수보다 작으면, 오른쪽(더 큰 점수들) 탐색
-                if (list.get(mid) < target) {
+                if (list.get(mid) >= target) {
+                    right = mid;
+                } else {
                     left = mid + 1;
-                } else { // 크거나 같으면, 조건은 만족하지만 더 앞쪽(최소 기준점)을 찾기 위해 왼쪽 탐색
-                    right = mid - 1;
                 }
             }
 
