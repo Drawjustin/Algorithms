@@ -1,8 +1,5 @@
 package 레벨2.문자열압축;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class main {
     class Solution {
         public int solution(String s) {
@@ -10,11 +7,11 @@ public class main {
 
             for (int split = 1; split <= s.length() / 2; split++) {
 
-                String prev = "";
+                String prev = s.substring(0, split);
                 int count = 1;
                 int len = 0;
 
-                for (int i = 0; i < s.length(); i += split) {
+                for (int i = split; i < s.length(); i += split) {
 
                     int end = Math.min(i + split, s.length());
                     String cur = s.substring(i, end);
@@ -22,17 +19,16 @@ public class main {
                     if (prev.equals(cur)) {
                         count++;
                     } else {
-                        if (!prev.equals("")) {
-                            len += prev.length();
-                            if (count > 1) len += String.valueOf(count).length();
-                        }
+                        if (count > 1) len += String.valueOf(count).length();
+                        len += prev.length();
+
                         prev = cur;
                         count = 1;
                     }
                 }
 
-                len += prev.length();
                 if (count > 1) len += String.valueOf(count).length();
+                len += prev.length();
 
                 answer = Math.min(answer, len);
             }
