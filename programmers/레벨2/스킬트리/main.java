@@ -5,33 +5,12 @@ public class main {
         public int solution(String skill, String[] skill_trees) {
             int answer = 0;
 
+            for (String skillTree : skill_trees) {
+                // 1. skill에 포함되지 않은 모든 스킬을 문자열에서 제거해버립니다.
+                String filtered = skillTree.replaceAll("[^" + skill + "]", "");
 
-
-            for (int i = 0; i < skill_trees.length; i++) {
-                int [][] node = new int [101][2];
-
-                for (int q = 0; q < skill.length() - 1; q++) {
-                    node[skill.charAt(q)][0] = -1;
-                    node[skill.charAt(q)][1] = skill.charAt(q+1);
-                }
-
-                node[skill.charAt(skill.length() - 1)][0] = -1;
-                node[skill.charAt(0)][0] = 1;
-
-                String cur =  skill_trees[i];
-
-                int flag = 1;
-                for (int j = 0; j < cur.length(); j++) {
-                    if(node[cur.charAt(j)][0] < 0) {
-                        flag = -1;
-                        break;
-                    }
-                    else if(node[cur.charAt(j)][0] == 1) {
-                        node[node[cur.charAt(j)][1]][0] = 1;
-                    }
-                }
-                System.out.println(i +" " + flag);
-                if(flag == 1){
+                // 2. 남은 스킬 순서가 원래 skill의 접두사(처음부터 시작)인지 확인합니다.
+                if (skill.startsWith(filtered)) {
                     answer++;
                 }
             }
