@@ -2,22 +2,19 @@ package 레벨2.타겟넘버;
 
 public class main {
     class Solution {
-        int answer = 0;
         public int solution(int[] numbers, int target) {
-
-            dfs(numbers,target,0,0);
-
-            return answer;
+            return countWays(numbers, target, 0, 0);
         }
 
-        public void dfs(int[] numbers, int target, int start, int sum) {
-            if(start == numbers.length ) {
-                if(target == sum)
-                    answer++;
-                return;
+        private int countWays(int[] numbers, int target, int index, int sum) {
+            if (index == numbers.length) {
+                return sum == target ? 1 : 0;
             }
-            dfs(numbers, target, start + 1, sum + numbers[start]);
-            dfs(numbers, target, start + 1, sum - numbers[start]);
+
+            int addCase = countWays(numbers, target, index + 1, sum + numbers[index]);
+            int subtractCase = countWays(numbers, target, index + 1, sum - numbers[index]);
+
+            return addCase + subtractCase;
         }
     }
 }
