@@ -2,33 +2,20 @@ package 레벨2.카펫;
 
 public class main {
     class Solution {
-        int[] answer = new int[2];
-        boolean [][] isVisited = new boolean[5001][5001];
         public int[] solution(int brown, int yellow) {
+            int total = brown + yellow;
 
-            int curX = 3;
-            int curY = 3;
-            int curBrown = 8;
-            int curYellow = 1;
+            for (int y = 3; y <= Math.sqrt(total); y++) {
+                if (total % y != 0) continue;
 
-            dfs(curY,curX,curBrown,curYellow,brown,yellow);
+                int x = total / y;
 
-            return answer;
-        }
-        public void dfs(int y, int x , int cB, int cY, int B, int Y) {
-            if(answer[0] != 0) return;
-            if(cB > B || cY > Y) return;
-            if(isVisited[y][x]) return;
-
-            isVisited[y][x] = true;
-
-            if(cB==B && cY==Y){
-                answer = new int []{y,x};
-                return;
+                if ((x - 2) * (y - 2) == yellow) {
+                    return new int[]{x, y};
+                }
             }
 
-            dfs(y+1,x,cB+2, cY+x-2,B,Y);
-            dfs(y,x+1,cB+2,cY+y-2,B,Y);
+            return new int[]{};
         }
     }
 }
