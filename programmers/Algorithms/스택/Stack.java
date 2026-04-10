@@ -1,5 +1,7 @@
 package Algorithms.스택;
 
+import java.util.ArrayDeque;
+
 public class Stack {
     public static void main(String[] args) {
 
@@ -12,7 +14,7 @@ public class Stack {
 
     class CustomStack{
         private int[] stack;
-        private int top = -1;
+        private int top = 0;
 
         CustomStack(int capacity){
             stack = new int[Math.max(1, capacity)];
@@ -21,43 +23,43 @@ public class Stack {
         void push(int value){
             if(isFull()){
                 int [] newStack = new int [stack.length * 2];
-                System.arraycopy(stack, 0, newStack, 0, top + 1);
+                System.arraycopy(stack, 0, newStack, 0, top);
                 stack = newStack;
             }
-            stack[++top] = value;
+            stack[top++] = value;
 
         }
         boolean isFull(){
-            return top  == stack.length - 1;
+            return top == stack.length;
         }
 
         int pop(){
             if(this.isEmpty()){
                 throw new IllegalStateException();
             }
-            return stack[top--];
+            return stack[--top];
         }
         boolean isEmpty(){
-            return top == -1;
+            return top == 0;
         }
         int peek(){
             if(this.isEmpty()){
                 throw new IllegalStateException();
             }
-            return stack[top];
+            return stack[top - 1];
         }
 
         int size(){
-            return top + 1;
+            return top;
         }
         void clear() {
-            top = -1;
+            top = 0;
         }
     }
 
     class GenericCustomStack<T>{
         private Object[] stack;
-        private int top = -1;
+        private int top = 0;
 
         GenericCustomStack(int capacity){
             stack = new Object[Math.max(1, capacity)];
@@ -66,42 +68,42 @@ public class Stack {
         void push(T value){
             if(isFull()){
                 Object [] newStack = new Object [stack.length * 2];
-                System.arraycopy(stack, 0, newStack, 0, top + 1);
+                System.arraycopy(stack, 0, newStack, 0, top);
                 stack = newStack;
             }
-            stack[++top] = value;
+            stack[top++] = value;
 
         }
         boolean isFull(){
-            return top  == stack.length - 1;
+            return top == stack.length;
         }
 
         T pop(){
             if(this.isEmpty()){
                 throw new IllegalStateException();
             }
-            T v = (T) stack[top];
-            stack[top--] = null;
+            T v = (T) stack[top - 1];
+            stack[--top] = null;
             return v;
         }
         boolean isEmpty(){
-            return top == -1;
+            return top == 0;
         }
         T peek(){
             if(this.isEmpty()){
                 throw new IllegalStateException();
             }
-            return (T) stack[top];
+            return (T) stack[top - 1];
         }
 
         int size(){
-            return top + 1;
+            return top;
         }
         void clear() {
-            for (int i = 0; i <= top; i++) {
+            for (int i = 0; i < top; i++) {
                 stack[i] = null;
             }
-            top = -1;
+            top = 0;
         }
     }
 }
