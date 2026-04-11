@@ -228,6 +228,117 @@ public class Tree {
     }
 
 
+    class BinaryTree {
+        Node root;
+
+        void add(int value){
+            root = insert(root, value);
+        }
+
+        Node insert(Node node, int value){
+            if(node == null){
+                return new Node(value);
+            }
+
+            if(value < node.item){
+                node.left = insert(node.left, value);
+            } else {
+                node.right = insert(node.right, value);
+            }
+
+            return rebalance(node);
+        }
+
+        Node rebalance(Node node){
+            if(node == null){
+                return null;
+            }
+
+            updateHeight(node);
+            int balance = getBalance(node);
+
+            // LL / LR
+            if(balance > 1){
+                if(getBalance(node.left) < 0){
+                    node.left = rotateLeft(node.left); // LR
+                }
+                return rotateRight(node); // LL 또는 LR 마무리
+            }
+
+            // RR / RL
+            if(balance < -1){
+                if(getBalance(node.right) > 0){
+                    node.right = rotateRight(node.right); // RL
+                }
+                return rotateLeft(node); // RR 또는 RL 마무리
+            }
+
+            return node;
+        }
+        Node rotateLeft(Node node){
+            Node child = node.right;
+            Node childLeft = child.left;
+
+            child.left = node;
+            node.right = childLeft;
+
+            updateHeight(node);
+            updateHeight(child);
+
+            return child;
+        }
+
+        Node rotateRight(Node node){
+            Node child = node.left;
+            Node childRight = child.right;
+
+            child.right = node;
+            node.left = childRight;
+
+            updateHeight(node);
+            updateHeight(child);
+
+            return child;
+        }
+
+        int getBalance(Node node) {
+            if (node == null) {
+                return 0;
+            }
+            return height(node.left) - height(node.right);
+        }
+
+        int height() {
+            return height(root);
+        }
+
+        int height(Node node) {
+            if (node == null) {
+                return -1;
+            }
+            return node.height;
+        }
+
+        void updateHeight(Node node) {
+            if (node == null) {
+                return;
+            }
+            node.height = Math.max(height(node.left), height(node.right)) + 1;
+        }
+        class Node {
+            int item;
+            int height;
+            Node left;
+            Node right;
+
+            Node(int item){
+                this.item = item;
+                this.height = 0;
+            }
+        }
+    }
+
+
 
 
 
