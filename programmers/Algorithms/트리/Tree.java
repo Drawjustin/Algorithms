@@ -1,5 +1,8 @@
 package Algorithms.트리;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class Tree {
 
     class CustomBinaryTree {
@@ -125,6 +128,93 @@ public class Tree {
             printInOrder(node.right);
         }
 
+        void printPreOrder(Node node){
+            if(node == null){
+                return;
+            }
+            System.out.println(node.item + " ");
+            printPreOrder(node.left);
+            printPreOrder(node.right);
+        }
+
+        void printPostOrder(Node node){
+            if(node == null){
+                return;
+            }
+            printPostOrder(node.left);
+            printPostOrder(node.right);
+            System.out.println(node.item + " ");
+        }
+
+        void printLevelOrder(){
+            if(root == null){
+                return;
+            }
+            Deque<Node> queue = new ArrayDeque<>();
+            queue.offer(root);
+            while(!queue.isEmpty()){
+                Node curNode = queue.poll();
+                System.out.println(curNode.item + " ");
+                if(curNode.left != null)
+                    queue.offer(curNode.left);
+                if(curNode.right != null)
+                    queue.offer(curNode.right);
+            }
+        }
+
+        int min(){
+            if(root == null){
+                throw new IllegalStateException();
+            }
+            Node curNode = root;
+
+            while(curNode.left != null){
+                curNode = curNode.left;
+            }
+            return curNode.item;
+        }
+
+        int max(){
+            if(root == null){
+                throw new IllegalStateException();
+            }
+            Node curNode = root;
+
+            while(curNode.right != null){
+                curNode = curNode.right;
+            }
+            return curNode.item;
+        }
+
+        int height(Node node){
+            if(node == null){
+                return -1;
+            }
+//            빈 트리 높이 = -1
+//            리프 노드 높이 = 0
+            return Math.max(height(node.left), height(node.right)) + 1;
+        }
+
+        int count(Node node){
+            if(node == null){
+                return 0;
+            }
+
+            return count(node.left) + count(node.right) + 1;
+        }
+        boolean validate() { return validate(root, Long.MIN_VALUE, Long.MAX_VALUE); }
+        boolean validate(Node node, long min, long max) {
+            if (node == null) {
+                return true;
+            }
+
+            if (node.item < min || node.item >= max) {
+                return false;
+            }
+
+            return validate(node.left, min, node.item)
+                    && validate(node.right, node.item, max);
+        }
 
         class Node {
             int item;
@@ -136,4 +226,9 @@ public class Tree {
             }
         }
     }
+
+
+
+
+
 }
