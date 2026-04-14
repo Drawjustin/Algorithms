@@ -7,7 +7,7 @@ public class HashMap {
 
         @SuppressWarnings("unchecked")
         CustomHashMap(int capacity) {
-            buckets = (Node<K, V>[]) new Node[Math.max(1, capacity)];
+            buckets = (Node<K, V>[]) new Node[tableSizeFor(capacity)];
         }
 
         CustomHashMap() {
@@ -84,10 +84,33 @@ public class HashMap {
         }
 
         int index(K key) {
-            int hash = (key == null) ? 0 : key.hashCode();
-            return (hash & 0x7fffffff) % buckets.length;
+            return hash(key) & (buckets.length - 1);
         }
 
+        int hash(K key) {
+            int h = (key == null) ? 0 : key.hashCode();
+            return h ^ (h >>> 16);
+        }
+
+        int tableSizeFor(int capacity) {
+            int n = 1;
+            int target = Math.max(1, capacity);
+            while (n < target) {
+                n <<= 1;
+            }
+            return n;
+        }
+
+        /**
+         * int hash(K key) {
+         *     int h = (key == null) ? 0 : key.hashCode();
+         *     return h ^ (h >>> 16);
+         * }
+         *
+         * int index(K key) {
+         *     return hash(key) & (buckets.length - 1);
+         * }
+         */
         boolean equalsKey(K a, K b) {
             if (a == b) {
                 return true;
