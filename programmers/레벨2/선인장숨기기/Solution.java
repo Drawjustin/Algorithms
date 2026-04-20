@@ -1,48 +1,80 @@
 package 레벨2.선인장숨기기;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 
 public class Solution {
+    static final int INF = 1_000_000_000;
+
     public int[] solution(int m, int n, int h, int w, int[][] drops) {
-        int[][] map = new int[m][n];
+        int[][] time = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            Arrays.fill(time[i], INF);
+        }
+
+        for (int i = 0; i < drops.length; i++) {
+            int y = drops[i][0];
+            int x = drops[i][1];
+            time[y][x] = Math.min(time[y][x], i + 1);
+        }
+
+        int[][] rowMin = new int[m][n - w + 1];
 
         for (int i = 0; i < m; i++) {
-            Arrays.fill(map[i], Integer.MAX_VALUE);
-        }
+            Deque<Integer> dq = new ArrayDeque<>();
 
-        int k = 1;
-        for (int[] drop : drops) {
-            int y = drop[0];
-            int x = drop[1];
-
-            int startY = Math.max(0, y - h + 1);
-            int endY = Math.min(y, m - h);
-            int startX = Math.max(0, x - w + 1);
-            int endX = Math.min(x, n - w);
-
-            for (int i = startY; i <= endY; i++) {
-                for (int j = startX; j <= endX; j++) {
-                    map[i][j] = Math.min(map[i][j], k);
+            for (int j = 0; j < n; j++) {
+                while (!dq.isEmpty() && time[i][dq.peekLast()] >= time[i][j]) {
+                    dq.pollLast();
                 }
-            }
-            k++;
-        }
+                dq.offerLast(j);
 
-        int[] result = new int[]{0, 0, -1};
-
-        for (int i = 0; i <= m - h; i++) {
-            for (int j = 0; j <= n - w; j++) {
-                if (map[i][j] == Integer.MAX_VALUE) {
-                    return new int[]{i, j};
+                while (!dq.isEmpty() && dq.peekFirst() <= j - w) {
+                    dq.pollFirst();
                 }
-                if (result[2] < map[i][j]) {
-                    result[0] = i;
-                    result[1] = j;
-                    result[2] = map[i][j];
+
+                if (j >= w - 1) {
+                    rowMin[i][j - w + 1] = time[i][dq.peekFirst()];
                 }
             }
         }
 
-        return new int[]{result[0], result[1]};
+        int best = -1;
+        int bestY = Integer.MAX_VALUE;
+        int bestX = Integer.MAX_VALUE;
+
+        for (int j = 0; j <= n - w; j++) {
+            Deque<Integer> dq = new ArrayDeque<>();
+
+            for (int i = 0; i < m; i++) {
+                while (!dq.isEmpty() && rowMin[dq.peekLast()][j] >= rowMin[i][j]) {
+                    dq.pollLast();
+                }
+                dq.offerLast(i);
+
+                while (!dq.isEmpty() && dq.peekFirst() <= i - h) {
+                    dq.pollFirst();
+                }
+
+                if (i >= h - 1) {
+                    int startY = i - h + 1;
+                    int value = rowMin[dq.peekFirst()][j];
+
+                    if (value > best) {
+                        best = value;
+                        bestY = startY;
+                        bestX = j;
+                    } else if (value == best) {
+                        if (startY < bestY || (startY == bestY && j < bestX)) {
+                            bestY = startY;
+                            bestX = j;
+                        }
+                    }
+                }
+            }
+        }
+
+        return new int[]{bestY, bestX};
     }
 }
