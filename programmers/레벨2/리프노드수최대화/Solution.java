@@ -19,7 +19,7 @@ class Solution {
                 }
 
                 answer = Math.max(answer, (int) cur);
-
+ 
                 long remain = dist_limit - used;
                 long x = Math.min(cur, remain);
 
